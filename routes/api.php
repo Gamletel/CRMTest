@@ -28,8 +28,6 @@ Route::prefix('v1')
         Route::apiResource('tags', TagController::class)
             ->only(['store', 'update', 'destroy'])
             ->middleware('auth:sanctum');
-
-        Route
     });
 
 Route::post('/login', [LoginController::class, 'login'])->name('login');
