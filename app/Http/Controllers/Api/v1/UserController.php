@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\v1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\CreateUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
+use App\Http\Requests\UserTag\AttachUserTagRequest;
 use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 
@@ -37,5 +38,26 @@ class UserController extends Controller
     public function destroy(int $id): JsonResponse
     {
         return response()->json($this->userService->destroy($id));
+    }
+
+    public function attachTags(AttachUserTagRequest $request, int $id): JsonResponse
+    {
+        $user = $this->userService->findById($id);
+        $user->tags()->syncWithoutDetaching($request->input('tag_id'));
+
+        return response()->json([
+            $user->fresh('tags'),
+        ]);
+    }
+
+    public function detachTag(int $id, int $tag_id): JsonResponse
+    {
+        $user = $this->userService->findById($id);
+
+        $user->tags()->detach($tag_id);
+
+        return response()->json([
+            $user->fresh('tags'),
+        ]);
     }
 }
