@@ -25,7 +25,8 @@ class UserRepository
     public function update(array $data, int $id): User
     {
         $user = User::findOrFail($id);
-        $user->update($data);
+        $user->fill($data);
+        $user->save();
         return $user;
     }
     public function destroy(int $id): bool
